@@ -130,6 +130,27 @@ public class APIManager {
 	}
 
 	/**
+	 * Register a new Host for an API
+	 *
+	 * @param clazz Class of the {@link API} to register
+	 * @param host  {@link Plugin}-Host to register
+	 * @param <P>   Class implementing both {@link API} &amp; {@link Plugin}
+	 * @return the updated {@link RegisteredAPI}
+	 * @throws IllegalArgumentException if the API class is not registered or the Host is already registered
+	 */
+	public static <P extends API & Plugin> RegisteredAPI<P> registerAPIHost(Class<P> clazz, Plugin host) throws IllegalArgumentException {
+		API clazzAPI = null;
+		for (API api : HOST_MAP.keySet()) {
+			if (api.getClass().equals(clazz)) {
+				clazzAPI = api;
+				break;
+			}
+		}
+		if (clazzAPI == null) { throw new IllegalArgumentException("API for class '" + clazz.getName() + "' is not registered"); }
+		return registerAPIHost((P) clazzAPI, host);
+	}
+
+	/**
 	 * Get the next available Host for an API
 	 *
 	 * @param api {@link API} to get the Host for
