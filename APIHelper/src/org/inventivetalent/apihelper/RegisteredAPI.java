@@ -42,6 +42,8 @@ public class RegisteredAPI<P extends API & Plugin> {
 	protected boolean initialized = false;
 	protected Plugin initializerHost;
 
+	protected boolean eventsRegistered=false;
+
 	public RegisteredAPI(P api) {
 		this.api = api;
 	}

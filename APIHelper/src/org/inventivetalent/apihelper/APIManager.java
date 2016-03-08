@@ -69,8 +69,13 @@ public class APIManager {
 	 * @throws IllegalStateException    if no Hosts are available
 	 */
 	public static <P extends API & Plugin> P registerEvents(P api, Listener listener) throws IllegalArgumentException, IllegalStateException {
-		Plugin host = getAPIHost(api);
-		Bukkit.getPluginManager().registerEvents(listener, host);
+		if (!HOST_MAP.containsKey(api)) { throw new IllegalArgumentException("API for '" + api.getName() + "' is not registered"); }
+		RegisteredAPI registeredAPI = HOST_MAP.get(api);
+		if (registeredAPI.eventsRegistered) {
+			return api;//Only register events once
+		}
+		Bukkit.getPluginManager().registerEvents(listener, registeredAPI.getNextHost());
+		registeredAPI.eventsRegistered = true;
 		return api;
 	}
 
@@ -94,14 +99,16 @@ public class APIManager {
 	 *
 	 * @param api {@link API} to disable
 	 * @param <P> Class implementing both {@link API} &amp; {@link Plugin}
-	 * @throws IllegalArgumentException if the API or the Host is not registered
+	 * @throws IllegalArgumentException if the Host is not registered
 	 * @throws IllegalStateException    if no Hosts are available
 	 */
 	public static <P extends API & Plugin> void disableAPI(P api, Plugin host) throws IllegalArgumentException, IllegalStateException {
-		if (!HOST_MAP.containsKey(api)) { throw new IllegalArgumentException("API for '" + api.getName() + "' is not registered"); }
+		if (!HOST_MAP.containsKey(api)) { return; }
 		RegisteredAPI<P> registeredAPI = HOST_MAP.get(api);
 		if (api != host && !registeredAPI.hosts.contains(host)) { throw new IllegalArgumentException("Host '" + host.getName() + "' is not registered for '" + api.getName() + "'"); }
 		registeredAPI.disable();
+
+		HOST_MAP.remove(api);
 	}
 
 	/**
