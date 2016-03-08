@@ -79,12 +79,14 @@ public class APIManager {
 	 *
 	 * @param api {@link API} to initialize
 	 * @param <P> Class implementing both {@link API} &amp; {@link Plugin}
-	 * @throws IllegalArgumentException if the API is not registered
+	 * @throws IllegalArgumentException if the API or the Host is not registered
 	 * @throws IllegalStateException    if no Hosts are available
 	 */
-	public static <P extends API & Plugin> void initAPI(P api) throws IllegalArgumentException, IllegalStateException {
+	public static <P extends API & Plugin> void initAPI(P api,Plugin host) throws IllegalArgumentException, IllegalStateException {
 		if (!HOST_MAP.containsKey(api)) { throw new IllegalArgumentException("API for '" + api.getName() + "' is not registered"); }
-		HOST_MAP.get(api).init();
+		RegisteredAPI<P> registeredAPI = HOST_MAP.get(api);
+		if (!registeredAPI.hosts.contains(host)) { throw new IllegalArgumentException("Host '" + host.getName() + "' is not registered for '" + api.getName() + "'"); }
+		registeredAPI.init();
 	}
 
 	/**
