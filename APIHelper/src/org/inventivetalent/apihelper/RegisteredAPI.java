@@ -40,6 +40,7 @@ public class RegisteredAPI<P extends API & Plugin> {
 	protected final Set<Plugin> hosts = new HashSet<>();
 
 	protected boolean initialized = false;
+	protected Plugin initializerHost;
 
 	public RegisteredAPI(P api) {
 		this.api = api;
@@ -70,8 +71,16 @@ public class RegisteredAPI<P extends API & Plugin> {
 		if (initialized) {
 			return;//Only initialize once
 		}
-		this.api.init(getNextHost());
+		this.api.init(initializerHost = getNextHost());
 		initialized = true;
+	}
+
+	public void disable() {
+		if (!initialized) {
+			return;
+		}
+		this.api.disable(initializerHost);
+		initialized = false;
 	}
 
 }

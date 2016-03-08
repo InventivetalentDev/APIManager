@@ -32,4 +32,6 @@ import org.bukkit.plugin.Plugin;
 
 public interface API {
 	void init(Plugin host);
+
+	void disable(Plugin host);
 }
