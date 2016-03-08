@@ -28,6 +28,8 @@
 
 package org.inventivetalent.apihelper;
 
+import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
@@ -54,6 +56,22 @@ public class APIManager {
 
 		LOGGER.fine("'" + api.getName() + "' registered as new API");
 		return registeredAPI;
+	}
+
+	/**
+	 * Register events for an API
+	 *
+	 * @param api      {@link API} to register events for
+	 * @param <P>      Class implementing both {@link API} &amp; {@link Plugin}
+	 * @param listener {@link Listener} to register
+	 * @return the {@link API}
+	 * @throws IllegalArgumentException if the API is not registered
+	 * @throws IllegalStateException    if no Hosts are available
+	 */
+	public static <P extends API & Plugin> P registerEvents(P api, Listener listener) throws IllegalArgumentException, IllegalStateException {
+		Plugin host = getAPIHost(api);
+		Bukkit.getPluginManager().registerEvents(listener, host);
+		return api;
 	}
 
 	/**
