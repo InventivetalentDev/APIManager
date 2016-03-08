@@ -85,7 +85,7 @@ public class APIManager {
 	public static <P extends API & Plugin> void initAPI(P api, Plugin host) throws IllegalArgumentException, IllegalStateException {
 		if (!HOST_MAP.containsKey(api)) { throw new IllegalArgumentException("API for '" + api.getName() + "' is not registered"); }
 		RegisteredAPI<P> registeredAPI = HOST_MAP.get(api);
-		if (!registeredAPI.hosts.contains(host)) { throw new IllegalArgumentException("Host '" + host.getName() + "' is not registered for '" + api.getName() + "'"); }
+		if (api != host && !registeredAPI.hosts.contains(host)) { throw new IllegalArgumentException("Host '" + host.getName() + "' is not registered for '" + api.getName() + "'"); }
 		registeredAPI.init();
 	}
 
@@ -100,7 +100,7 @@ public class APIManager {
 	public static <P extends API & Plugin> void disableAPI(P api, Plugin host) throws IllegalArgumentException, IllegalStateException {
 		if (!HOST_MAP.containsKey(api)) { throw new IllegalArgumentException("API for '" + api.getName() + "' is not registered"); }
 		RegisteredAPI<P> registeredAPI = HOST_MAP.get(api);
-		if (!registeredAPI.hosts.contains(host)) { throw new IllegalArgumentException("Host '" + host.getName() + "' is not registered for '" + api.getName() + "'"); }
+		if (api != host && !registeredAPI.hosts.contains(host)) { throw new IllegalArgumentException("Host '" + host.getName() + "' is not registered for '" + api.getName() + "'"); }
 		registeredAPI.disable();
 	}
 
