@@ -28,5 +28,8 @@
 
 package org.inventivetalent.apihelper;
 
+import org.bukkit.plugin.Plugin;
+
 public interface API {
+	void init(Plugin host);
 }

@@ -75,6 +75,19 @@ public class APIManager {
 	}
 
 	/**
+	 * Initializes an API. Should be called in {@link Plugin#onEnable()}
+	 *
+	 * @param api {@link API} to initialize
+	 * @param <P> Class implementing both {@link API} &amp; {@link Plugin}
+	 * @throws IllegalArgumentException if the API is not registered
+	 * @throws IllegalStateException    if no Hosts are available
+	 */
+	public static <P extends API & Plugin> void initAPI(P api) throws IllegalArgumentException, IllegalStateException {
+		if (!HOST_MAP.containsKey(api)) { throw new IllegalArgumentException("API for '" + api.getName() + "' is not registered"); }
+		HOST_MAP.get(api).init();
+	}
+
+	/**
 	 * Register a new Host for an API
 	 *
 	 * @param api  {@link API} to register the host for

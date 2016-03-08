@@ -37,7 +37,9 @@ import java.util.Set;
 public class RegisteredAPI<P extends API & Plugin> {
 
 	protected final P api;
-	protected Set<Plugin> hosts = new HashSet<>();
+	protected final Set<Plugin> hosts = new HashSet<>();
+
+	protected boolean initialized = false;
 
 	public RegisteredAPI(P api) {
 		this.api = api;
@@ -62,6 +64,14 @@ public class RegisteredAPI<P extends API & Plugin> {
 			}
 		}
 		throw new IllegalStateException("API '" + this.api.getName() + "' is disabled and all registered Hosts are as well");
+	}
+
+	public void init() {
+		if (initialized) {
+			return;//Only initialize once
+		}
+		this.api.init(getNextHost());
+		initialized = true;
 	}
 
 }
