@@ -95,6 +95,26 @@ public class APIManager {
 	}
 
 	/**
+	 * Initializes an API. Should be called in {@link Plugin#onEnable()}
+	 *
+	 * @param clazz Class of the {@link API} to initialize
+	 * @param <P>   Class implementing both {@link API} &amp; {@link Plugin}
+	 * @throws IllegalArgumentException if the API or the Host is not registered
+	 * @throws IllegalStateException    if no Hosts are available
+	 */
+	public static <P extends API & Plugin> void initAPI(Class<P> clazz, Plugin host) throws IllegalArgumentException, IllegalStateException {
+		API clazzAPI = null;
+		for (API api : HOST_MAP.keySet()) {
+			if (api.getClass().equals(clazz)) {
+				clazzAPI = api;
+				break;
+			}
+		}
+		if (clazzAPI == null) { throw new IllegalArgumentException("API for class '" + clazz.getName() + "' is not registered"); }
+		initAPI((P) clazzAPI, host);
+	}
+
+	/**
 	 * Disables an API. Should be called in {@link Plugin#onDisable()}
 	 *
 	 * @param api {@link API} to disable
