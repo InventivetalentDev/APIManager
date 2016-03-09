@@ -93,9 +93,9 @@ public class APIManager {
 	 * @param api {@link API} to register
 	 * @throws APIRegistrationException if the API is already registered
 	 */
-	public static <P extends API> RegisteredAPI<P> registerAPI(P api) throws APIRegistrationException {
+	public static RegisteredAPI registerAPI(API api) throws APIRegistrationException {
 		if (HOST_MAP.containsKey(api)) { throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is already registered"); }
-		RegisteredAPI<P> registeredAPI = new RegisteredAPI<P>(api);
+		RegisteredAPI registeredAPI = new RegisteredAPI(api);
 		HOST_MAP.put(api, registeredAPI);
 
 		//Call load()
@@ -117,7 +117,7 @@ public class APIManager {
 	 * @see #registerAPI(API)
 	 * @see #registerAPIHost(API, Plugin)
 	 */
-	public static <P extends API> RegisteredAPI<P> registerAPI(P api, Plugin host) throws IllegalArgumentException, APIRegistrationException {
+	public static RegisteredAPI registerAPI(API api, Plugin host) throws IllegalArgumentException, APIRegistrationException {
 		validatePlugin(host);
 		registerAPI(api);
 		return registerAPIHost(api, host);
@@ -133,7 +133,7 @@ public class APIManager {
 	 * @param listener {@link Listener} to register
 	 * @throws APIRegistrationException If the API is not registered
 	 */
-	public static <P extends API> P registerEvents(P api, Listener listener) throws APIRegistrationException {
+	public static API registerEvents(API api, Listener listener) throws APIRegistrationException {
 		if (!HOST_MAP.containsKey(api)) { throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is not registered"); }
 		RegisteredAPI registeredAPI = HOST_MAP.get(api);
 		if (registeredAPI.eventsRegistered) {
@@ -147,9 +147,9 @@ public class APIManager {
 	/**
 	 * Initializes an API
 	 */
-	private static <P extends API> void initAPI(P api) throws APIRegistrationException {
+	private static void initAPI(API api) throws APIRegistrationException {
 		if (!HOST_MAP.containsKey(api)) { throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is not registered"); }
-		RegisteredAPI<P> registeredAPI = HOST_MAP.get(api);
+		RegisteredAPI registeredAPI = HOST_MAP.get(api);
 
 		//Call init()
 		registeredAPI.init();
@@ -162,7 +162,7 @@ public class APIManager {
 	 *
 	 * @param clazz {@link API} class to initialize
 	 */
-	public static <P extends API> void initAPI(Class<P> clazz) throws APIRegistrationException {
+	public static void initAPI(Class<? extends API> clazz) throws APIRegistrationException {
 		API clazzAPI = null;
 		for (API api : HOST_MAP.keySet()) {
 			if (api.getClass().equals(clazz)) {
@@ -175,9 +175,9 @@ public class APIManager {
 				LOGGER.info("API class '" + clazz.getName() + "' is not yet initialized. Creating new instance.");
 				try {
 					clazzAPI = clazz.newInstance();
-					registerAPI((P) clazzAPI);
+					registerAPI(clazzAPI);
 					for (Plugin plugin : PENDING_API_CLASSES.get(clazz)) {
-						if (plugin != null) { registerAPIHost((P) clazzAPI, plugin); }
+						if (plugin != null) { registerAPIHost(clazzAPI, plugin); }
 					}
 				} catch (ReflectiveOperationException e) {
 					LOGGER.warning("API class '" + clazz.getName() + "' is missing valid constructor");
@@ -185,15 +185,15 @@ public class APIManager {
 				PENDING_API_CLASSES.remove(clazz);
 			} else { throw new APIRegistrationException("API for class '" + clazz.getName() + "' is not registered"); }
 		}
-		initAPI((P) clazzAPI);
+		initAPI(clazzAPI);
 	}
 
 	/**
 	 * Disable an API
 	 */
-	private static <P extends API> void disableAPI(P api) {
+	private static void disableAPI(API api) {
 		if (!HOST_MAP.containsKey(api)) { return; }
-		RegisteredAPI<P> registeredAPI = HOST_MAP.get(api);
+		RegisteredAPI registeredAPI = HOST_MAP.get(api);
 
 		//Call disable()
 		registeredAPI.disable();
@@ -208,7 +208,7 @@ public class APIManager {
 	 *
 	 * @param clazz {@link API} class to disable
 	 */
-	public static <P extends API> void disableAPI(Class<P> clazz) {
+	public static void disableAPI(Class<? extends API> clazz) {
 		API clazzAPI = null;
 		for (API api : HOST_MAP.keySet()) {
 			if (api.getClass().equals(clazz)) {
@@ -216,7 +216,7 @@ public class APIManager {
 				break;
 			}
 		}
-		disableAPI((P) clazzAPI);
+		disableAPI(clazzAPI);
 	}
 
 	/**
@@ -228,7 +228,7 @@ public class APIManager {
 	 * @param clazz {@link API} class to require
 	 * @param host  {@link Plugin} host of the API - may be <code>null</code> if called from {@link API#load()}
 	 */
-	public static <P extends API> void require(Class<P> clazz, @Nullable Plugin host) {
+	public static void require(Class<? extends API> clazz, @Nullable Plugin host) {
 		try {
 			if (host == null) { throw new APIRegistrationException(); }
 			registerAPIHost(clazz, host);
@@ -249,10 +249,10 @@ public class APIManager {
 	 * @param api  {@link API} to register the host for
 	 * @param host {@link Plugin}-Host to register
 	 */
-	private static <P extends API> RegisteredAPI<P> registerAPIHost(P api, Plugin host) throws APIRegistrationException {
+	private static RegisteredAPI registerAPIHost(API api, Plugin host) throws APIRegistrationException {
 		validatePlugin(host);
 		if (!HOST_MAP.containsKey(api)) { throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is not registered"); }
-		RegisteredAPI<P> registeredAPI = HOST_MAP.get(api);
+		RegisteredAPI registeredAPI = HOST_MAP.get(api);
 		registeredAPI.registerHost(host);
 
 		LOGGER.fine("'" + host.getName() + "' registered as Host for '" + api + "'");
@@ -265,7 +265,7 @@ public class APIManager {
 	 * @param clazz Class of the {@link API} to register
 	 * @param host  {@link Plugin}-Host to register
 	 */
-	public static <P extends API> RegisteredAPI<P> registerAPIHost(Class<P> clazz, Plugin host) throws APIRegistrationException {
+	public static RegisteredAPI registerAPIHost(Class<? extends API> clazz, Plugin host) throws APIRegistrationException {
 		validatePlugin(host);
 		API clazzAPI = null;
 		for (API api : HOST_MAP.keySet()) {
@@ -275,7 +275,7 @@ public class APIManager {
 			}
 		}
 		if (clazzAPI == null) { throw new APIRegistrationException("API for class '" + clazz.getName() + "' is not registered"); }
-		return registerAPIHost((P) clazzAPI, host);
+		return registerAPIHost(clazzAPI, host);
 	}
 
 	/**
@@ -284,7 +284,7 @@ public class APIManager {
 	 * @param api {@link API} to get the host for
 	 * @return {@link Plugin} instance
 	 */
-	public static <P extends API> Plugin getAPIHost(P api) throws APIRegistrationException, MissingHostException {
+	public static Plugin getAPIHost(API api) throws APIRegistrationException, MissingHostException {
 		if (!HOST_MAP.containsKey(api)) { throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is not registered"); }
 		return HOST_MAP.get(api).getNextHost();
 	}

@@ -36,9 +36,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class RegisteredAPI<P extends API> {
+public class RegisteredAPI {
 
-	protected final P api;
+	protected final API api;
 	protected final Set<Plugin> hosts = new HashSet<>();
 
 	protected boolean initialized = false;
@@ -46,7 +46,7 @@ public class RegisteredAPI<P extends API> {
 
 	protected boolean eventsRegistered = false;
 
-	public RegisteredAPI(P api) {
+	public RegisteredAPI(API api) {
 		this.api = api;
 	}
 
