@@ -76,6 +76,8 @@ import java.util.logging.Logger;
  * <br/>
  * Example API-Plugin class: <a href="http://paste.inventivetalent.org/mevikuwego.java">paste.inventivetalent.org/mevikuwego.java</a> <br/>
  * Example API-Plugin API class: <a href="http://paste.inventivetalent.org/aqigutunax.java">paste.inventivetalent.org/aqigutunax.java</a> <br/>
+ * <br/>
+ * <strong>For both API and Plugin make sure that you add a <i>softdepend</i> for the APIs you require to the plugin.yml!</strong>
  */
 public class APIManager {
 
