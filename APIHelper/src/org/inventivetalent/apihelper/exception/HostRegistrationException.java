@@ -28,7 +28,7 @@
 
 package org.inventivetalent.apihelper.exception;
 
-public class HostRegistrationException extends RuntimeException{
+public class HostRegistrationException extends RuntimeException {
 	public HostRegistrationException() {
 	}
 
