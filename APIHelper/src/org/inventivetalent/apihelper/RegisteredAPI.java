@@ -29,12 +29,14 @@
 package org.inventivetalent.apihelper;
 
 import org.bukkit.plugin.Plugin;
+import org.inventivetalent.apihelper.exception.HostRegistrationException;
+import org.inventivetalent.apihelper.exception.MissingHostException;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class RegisteredAPI<P extends API & Plugin> {
+public class RegisteredAPI<P extends API> {
 
 	protected final P api;
 	protected final Set<Plugin> hosts = new HashSet<>();
@@ -42,23 +44,23 @@ public class RegisteredAPI<P extends API & Plugin> {
 	protected boolean initialized = false;
 	protected Plugin initializerHost;
 
-	protected boolean eventsRegistered=false;
+	protected boolean eventsRegistered = false;
 
 	public RegisteredAPI(P api) {
 		this.api = api;
 	}
 
-	public void registerHost(Plugin host) throws IllegalArgumentException {
-		if (this.hosts.contains(host)) { throw new IllegalArgumentException("Host API host '" + host.getName() + "' for '" + this.api.getName() + "'"); }
+	public void registerHost(Plugin host) throws HostRegistrationException {
+		if (this.hosts.contains(host)) { throw new HostRegistrationException("API host '" + host.getName() + "' for '" + this.api.getClass().getName() + "' is already registered"); }
 		this.hosts.add(host);
 	}
 
-	public Plugin getNextHost() throws IllegalStateException {
-		if (this.api.isEnabled()) {
-			return this.api;//The API-Plugin is enable, so this is the best choice
+	public Plugin getNextHost() throws MissingHostException {
+		if (this.api instanceof Plugin && ((Plugin) this.api).isEnabled()) {
+			return (Plugin) this.api;//The API-Plugin is enable, so this is the best choice
 		}
 		if (hosts.isEmpty()) {
-			throw new IllegalStateException("API '" + this.api.getName() + "' is disabled, but no other Hosts have been registered");//Someone forgot to properly register a host for the API
+			throw new MissingHostException("API '" + this.api.getClass().getName() + "' is disabled, but no other Hosts have been registered");//Someone forgot to properly register a host for the API
 		}
 		for (Iterator<Plugin> iterator = this.hosts.iterator(); iterator.hasNext(); ) {
 			Plugin host = iterator.next();
@@ -66,9 +68,14 @@ public class RegisteredAPI<P extends API & Plugin> {
 				return host;//Return the first enabled plugin
 			}
 		}
-		throw new IllegalStateException("API '" + this.api.getName() + "' is disabled and all registered Hosts are as well");
+		throw new MissingHostException("API '" + this.api.getClass().getName() + "' is disabled and all registered Hosts are as well");
 	}
 
+	/**
+	 * Initializes the API (if not already initialized)
+	 * <p>
+	 * Calls {@link API#init(Plugin)}
+	 */
 	public void init() {
 		if (initialized) {
 			return;//Only initialize once
@@ -77,6 +84,11 @@ public class RegisteredAPI<P extends API & Plugin> {
 		initialized = true;
 	}
 
+	/**
+	 * Disables the API (if not already disabled)
+	 * <p>
+	 * Calls {@link API#disable(Plugin)}
+	 */
 	public void disable() {
 		if (!initialized) {
 			return;
