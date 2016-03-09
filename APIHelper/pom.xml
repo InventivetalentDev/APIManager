@@ -78,7 +78,6 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>org.mcstats.*</include>
                                     <include>org.inventivetalent:apimanager**</include>
                                 </includes>
                             </artifactSet>
