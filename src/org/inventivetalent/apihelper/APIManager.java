@@ -14,42 +14,16 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /**
- * This Manager allows other plugins to include APIs in their jar-file,
- * which would usually have to be loaded as separate plugins (e.g. because they need to register events) <br/>
- * <br/>
- * <br/>
- * To implement this in an <strong>API</strong>, use the following project structure: <br/>
- * 1) <strong>Create your API class which implements {@link API} and override the methods</strong> <br/>
- * 2.1) <strong>Create your main class which extends JavaPlugin. Override {@link Plugin#onLoad()}, {@link Plugin#onEnable()} &amp; {@link Plugin#onDisable()}</strong> <br/>
- * 2.2) Create a new instance of your API class <br/>
- * 2.3.1) <strong>Call {@link APIManager#registerAPI(API, Plugin)} with your API instance and the plugin instance in {@link Plugin#onLoad()}</strong> <br/>
- * 2.3.1.1) Note: If your plugin does not get loaded, the APIManager will register the API instance automatically
- * 2.3.2) <strong>Call {@link APIManager#initAPI(Class)} with your API class in {@link Plugin#onEnable()}</strong> <br/>
- * 2.3.3) <strong>Call {@link APIManager#disableAPI(Class)} with your API class in {@link Plugin#onDisable()}</strong> <br/>
- * 2.4.1) The {@link API#load()} method behaves similar to {@link Plugin#onLoad()}, so put whatever you need there <br/>
- * 2.4.2) <strong>Call {@link APIManager#registerEvents(API, Listener)} in {@link Plugin#onEnable()} if you need to register events.</strong> <br/>
- * 2.4.2.1) If you need a {@link Plugin} instance elsewhere (e.g. to register Schedulers), use {@link APIManager#getAPIHost(API)} <br/>
- * 2.4.2.1) Make sure to implement {@link Listener} in your {@link API} class and not the plugin class! <br/>
- * 2.4.3) The {@link API#disable(Plugin)} method behaves similar to {@link Plugin#onDisable()}, so put whatever you need there <br/>
- * <br/>
- * Example API class: <a href="http://paste.inventivetalent.org/ijixemumix.java">paste.inventivetalent.org/ijixemumix.java</a> <br/>
- * Example Plugin class: <a href="http://paste.inventivetalent.org/imovidaqaz.java">paste.inventivetalent.org/imovidaqaz.java</a> <br/>
- * <br/>
- * <br/>
- * To implement this in a <strong>Plugin</strong> or an API which depends on one or more APIs, use the following project structure: <br/>
- * 1) <strong>In your plugin class, override {@link Plugin#onLoad()}, {@link Plugin#onEnable()} &amp; {@link Plugin#onDisable()}</strong> <br/>
- * 2.1) <strong>Call {@link APIManager#require(Class, Plugin)} with the required API class and your plugin instance for <i>every</i> API you depend on in {@link Plugin#onLoad()}</strong> <br/>
- * 2.1.1) <strong>If you are making an API with API-dependencies, you should call {@link APIManager#require(Class, Plugin)} with <code>null</code> as the plugin in {@link API#load()}</strong> <br/>
- * 2.2) <strong>Call {@link APIManager#initAPI(Class)}</strong> with the API class for <i>every</i> API you depend on in {@link Plugin#onEnable()} <br/>
- * 2.2.1) <strong>Note: Also <i>require</i> &amp; <i>init</i> all APIs another API depends on!</strong> <br/>
- * 2.3) You <i>can</i> call {@link APIManager#disableAPI(Class)} in {@link Plugin#onDisable()}, but should only be required if the APIs have to save data when being disabled <br/>
- * <br/>
- * Example Plugin class: <a href="http://paste.inventivetalent.org/zibimucole.java">paste.inventivetalent.org/zibimucole.java</a> <br/>
- * <br/>
- * Example API-Plugin class: <a href="http://paste.inventivetalent.org/mevikuwego.java">paste.inventivetalent.org/mevikuwego.java</a> <br/>
- * Example API-Plugin API class: <a href="http://paste.inventivetalent.org/aqigutunax.java">paste.inventivetalent.org/aqigutunax.java</a> <br/>
- * <br/>
- * <strong>For both API and Plugin make sure that you add a <i>softdepend</i> for the APIs you require to the plugin.yml!</strong>
+ * This Manager allows other plugins to include APIs in their jar-file, which would usually have to be loaded as separate plugins (e.g. because they need to register events) <br> <br> <br> To implement this in an <strong>API</strong>, use the following project structure: <br> 1) <strong>Create your API class which implements {@link API} and override the methods</strong> <br> 2.1) <strong>Create
+ * your main class which extends JavaPlugin. Override {@link Plugin#onLoad()}, {@link Plugin#onEnable()} &amp; {@link Plugin#onDisable()}</strong> <br> 2.2) Create a new instance of your API class <br> 2.3.1) <strong>Call {@link APIManager#registerAPI(API, Plugin)} with your API instance and the plugin instance in {@link Plugin#onLoad()}</strong> <br> 2.3.1.1) Note: If your plugin does not get
+ * loaded, the APIManager will register the API instance automatically 2.3.2) <strong>Call {@link APIManager#initAPI(Class)} with your API class in {@link Plugin#onEnable()}</strong> <br> 2.3.3) <strong>Call {@link APIManager#disableAPI(Class)} with your API class in {@link Plugin#onDisable()}</strong> <br> 2.4.1) The {@link API#load()} method behaves similar to {@link Plugin#onLoad()}, so put
+ * whatever you need there <br> 2.4.2) <strong>Call {@link APIManager#registerEvents(API, Listener)} in {@link Plugin#onEnable()} if you need to register events.</strong> <br> 2.4.2.1) If you need a {@link Plugin} instance elsewhere (e.g. to register Schedulers), use {@link APIManager#getAPIHost(API)} <br> 2.4.2.1) Make sure to implement {@link Listener} in your {@link API} class and not the
+ * plugin class! <br> 2.4.3) The {@link API#disable(Plugin)} method behaves similar to {@link Plugin#onDisable()}, so put whatever you need there <br> <br> Example API class: <a href="http://paste.inventivetalent.org/ijixemumix.java">paste.inventivetalent.org/ijixemumix.java</a> <br> Example Plugin class: <a
+ * href="http://paste.inventivetalent.org/imovidaqaz.java">paste.inventivetalent.org/imovidaqaz.java</a> <br> <br> <br> To implement this in a <strong>Plugin</strong> or an API which depends on one or more APIs, use the following project structure: <br> 1) <strong>In your plugin class, override {@link Plugin#onLoad()}, {@link Plugin#onEnable()} &amp; {@link Plugin#onDisable()}</strong> <br> 2.1)
+ * <strong>Call {@link APIManager#require(Class, Plugin)} with the required API class and your plugin instance for <i>every</i> API you depend on in {@link Plugin#onLoad()}</strong> <br> 2.1.1) <strong>If you are making an API with API-dependencies, you should call {@link APIManager#require(Class, Plugin)} with <code>null</code> as the plugin in {@link API#load()}</strong> <br> 2.2) <strong>Call
+ * {@link APIManager#initAPI(Class)}</strong> with the API class for <i>every</i> API you depend on in {@link Plugin#onEnable()} <br> 2.2.1) <strong>Note: Also <i>require</i> &amp; <i>init</i> all APIs another API depends on!</strong> <br> 2.3) You <i>can</i> call {@link APIManager#disableAPI(Class)} in {@link Plugin#onDisable()}, but should only be required if the APIs have to save data when
+ * being disabled <br> <br> Example Plugin class: <a href="http://paste.inventivetalent.org/zibimucole.java">paste.inventivetalent.org/zibimucole.java</a> <br> <br> Example API-Plugin class: <a href="http://paste.inventivetalent.org/mevikuwego.java">paste.inventivetalent.org/mevikuwego.java</a> <br> Example API-Plugin API class: <a
+ * href="http://paste.inventivetalent.org/aqigutunax.java">paste.inventivetalent.org/aqigutunax.java</a> <br> <br> <strong>For both API and Plugin make sure that you add a <i>softdepend</i> for the APIs you require to the plugin.yml!</strong>
  */
 public class APIManager {
 
@@ -58,11 +32,10 @@ public class APIManager {
 	private static final Logger                                 LOGGER              = Logger.getLogger("APIManager");
 
 	/**
-	 * Register an API
-	 * <p>
-	 * Call this in {@link Plugin#onLoad()}
+	 * Register an API <p> Call this in {@link Plugin#onLoad()}
 	 *
 	 * @param api {@link API} to register
+	 * @return the registered API
 	 * @throws APIRegistrationException if the API is already registered
 	 */
 	public static RegisteredAPI registerAPI(API api) throws APIRegistrationException {
@@ -78,12 +51,11 @@ public class APIManager {
 	}
 
 	/**
-	 * Register an API and the plugin-host
-	 * <p>
-	 * Call this in {@link Plugin#onLoad()}
+	 * Register an API and the plugin-host <p> Call this in {@link Plugin#onLoad()}
 	 *
 	 * @param api  {@link API} to register
 	 * @param host {@link Plugin} host of the API
+	 * @return the registered api
 	 * @throws APIRegistrationException if the API is already registered
 	 * @throws IllegalArgumentException If the Plugin implements API
 	 * @see #registerAPI(API)
@@ -96,13 +68,11 @@ public class APIManager {
 	}
 
 	/**
-	 * Register events for an API.
-	 * Note that the {@link API} class and not the {@link Plugin} class should implement {@link Listener}
-	 * <p>
-	 * Call this in {@link Plugin#onEnable()}
+	 * Register events for an API. Note that the {@link API} class and not the {@link Plugin} class should implement {@link Listener} <p> Call this in {@link Plugin#onEnable()}
 	 *
 	 * @param api      {@link API} to register events for
 	 * @param listener {@link Listener} to register
+	 * @return the API
 	 * @throws APIRegistrationException If the API is not registered
 	 */
 	public static API registerEvents(API api, Listener listener) throws APIRegistrationException {
@@ -128,9 +98,7 @@ public class APIManager {
 	}
 
 	/**
-	 * Initializes an API
-	 * <p>
-	 * Call this in {@link Plugin#onEnable()}
+	 * Initializes an API <p> Call this in {@link Plugin#onEnable()}
 	 *
 	 * @param clazz {@link API} class to initialize
 	 */
@@ -174,9 +142,7 @@ public class APIManager {
 	}
 
 	/**
-	 * Disable an API
-	 * <p>
-	 * Can be called in {@link Plugin#onDisable()}, but should not be necessary
+	 * Disable an API <p> Can be called in {@link Plugin#onDisable()}, but should not be necessary
 	 *
 	 * @param clazz {@link API} class to disable
 	 */
@@ -192,10 +158,7 @@ public class APIManager {
 	}
 
 	/**
-	 * Require an API
-	 * <p>
-	 * Call this in {@link Plugin#onLoad()} if you are making a Plugin, <br/>
-	 * or call this in {@link API#load()} if you are making an API
+	 * Require an API <p> Call this in {@link Plugin#onLoad()} if you are making a Plugin, <br> or call this in {@link API#load()} if you are making an API
 	 *
 	 * @param clazz {@link API} class to require
 	 * @param host  {@link Plugin} host of the API - may be <code>null</code> if called from {@link API#load()}
@@ -220,6 +183,7 @@ public class APIManager {
 	 *
 	 * @param api  {@link API} to register the host for
 	 * @param host {@link Plugin}-Host to register
+	 * @return the registered api
 	 */
 	private static RegisteredAPI registerAPIHost(API api, Plugin host) throws APIRegistrationException {
 		validatePlugin(host);
@@ -236,6 +200,7 @@ public class APIManager {
 	 *
 	 * @param clazz Class of the {@link API} to register
 	 * @param host  {@link Plugin}-Host to register
+	 * @return the registered api
 	 */
 	public static RegisteredAPI registerAPIHost(Class<? extends API> clazz, Plugin host) throws APIRegistrationException {
 		validatePlugin(host);
