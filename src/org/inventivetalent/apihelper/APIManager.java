@@ -112,7 +112,6 @@ public class APIManager {
 		}
 		if (clazzAPI == null) {
 			if (PENDING_API_CLASSES.containsKey(clazz)) {
-				LOGGER.info("API class '" + clazz.getName() + "' is not yet initialized. Creating new instance.");
 				try {
 					clazzAPI = clazz.newInstance();
 					registerAPI(clazzAPI);
