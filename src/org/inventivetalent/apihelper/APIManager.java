@@ -6,7 +6,6 @@ import org.bukkit.plugin.Plugin;
 import org.inventivetalent.apihelper.exception.APIRegistrationException;
 import org.inventivetalent.apihelper.exception.MissingHostException;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -163,7 +162,7 @@ public class APIManager {
 	 * @param clazz {@link API} class to require
 	 * @param host  {@link Plugin} host of the API - may be <code>null</code> if called from {@link API#load()}
 	 */
-	public static void require(Class<? extends API> clazz, @Nullable Plugin host) {
+	public static void require(Class<? extends API> clazz, Plugin host) {
 		try {
 			if (host == null) { throw new APIRegistrationException(); }
 			registerAPIHost(clazz, host);
