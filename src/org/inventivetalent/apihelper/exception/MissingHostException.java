@@ -1,5 +1,6 @@
 package org.inventivetalent.apihelper.exception;
 
+@SuppressWarnings("unused")
 public class MissingHostException extends RuntimeException {
 	public MissingHostException() {
 	}

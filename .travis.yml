@@ -15,7 +15,7 @@ deploy:
     secure: "aDzcR0vy7GxXp8Lw+1FEvqtNtCyjcRVVhez9p5DPdYtheNnVDRkLXwyxD2+N5MGK/WI7RbIQoInnklAs+WUzbcb9qcjEtsMTS09swD62SqTV80oW/gs0l2SadTguZFG4n6IM8cxZBbQY9jXxnp5WLc3GSFMPnXCwz+XjiN9C2jHbwpS7oNbLoG7S/JdBYNf+DupnY3Bn/NoDCIzQAvJnjp1X9+CkbsBJEn8oU1zmyZ2w4QR94t33Ol9gaehBF9vXn+xn8/FoC+erBX4if3FdXqdPc1p1aPhCx0i3YoCuHJnqY5L57ait3vB93o8lDoA4ZRYECCr0AOA+JSHG556hBZb3pXlG4KZVAixNt9412KqOeGd3QzL/9J31MkLFX5GI6Z7UOqQt2mJWSoupoHwbyCBe711/pM7HU44DHaOEChuo7nlavERYTaG/ncIb0lHNY6dmpGJ9lcj41sp8WV4SqRw55uqnN6PPCoIw7xm9ew1fIMYc0yVRbnnf7s2Ni7nni+iVYQYp3R54mrlFcGhEWPwghqNcdzQfRGMrSeZDO4aeCKOxy0o7/xiQHZYKhubtRCEFql7pmQDPKdEPbXZFNX6sYWvrovLHGqAeY5vczSpZSre0I5nmB0d36Ztao5meD9+RGL+v/jc4pzDlpRRsj/fjCtATW25l2Q4PP3E+JXo="
   file_glob: true
   file: 
-    - "target/apimanager-*.jar"
+    - "target/apihelper-*.jar"
   skip_cleanup: true
   on:
     tags: true

@@ -5,9 +5,9 @@ import org.inventivetalent.apihelper.exception.HostRegistrationException;
 import org.inventivetalent.apihelper.exception.MissingHostException;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class RegisteredAPI {
 
 	protected final API api;
@@ -23,7 +23,9 @@ public class RegisteredAPI {
 	}
 
 	public void registerHost(Plugin host) throws HostRegistrationException {
-		if (this.hosts.contains(host)) { throw new HostRegistrationException("API host '" + host.getName() + "' for '" + this.api.getClass().getName() + "' is already registered"); }
+		if (this.hosts.contains(host)) {
+			throw new HostRegistrationException("API host '" + host.getName() + "' for '" + this.api.getClass().getName() + "' is already registered");
+		}
 		this.hosts.add(host);
 	}
 
@@ -34,8 +36,7 @@ public class RegisteredAPI {
 		if (hosts.isEmpty()) {
 			throw new MissingHostException("API '" + this.api.getClass().getName() + "' is disabled, but no other Hosts have been registered");//Someone forgot to properly register a host for the API
 		}
-		for (Iterator<Plugin> iterator = this.hosts.iterator(); iterator.hasNext(); ) {
-			Plugin host = iterator.next();
+		for (Plugin host : this.hosts) {
 			if (host.isEnabled()) {
 				return host;//Return the first enabled plugin
 			}

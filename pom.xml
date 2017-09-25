@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.inventivetalent</groupId>
-    <artifactId>apimanager</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <artifactId>apihelper</artifactId>
+    <version>1.0.4-SNAPSHOT</version>
 
-    <name>APIManager</name>
+    <name>APIHelper</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
