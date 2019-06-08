@@ -24,11 +24,13 @@ import java.util.logging.Logger;
  * being disabled <br> <br> Example Plugin class: <a href="http://paste.inventivetalent.org/zibimucole.java">paste.inventivetalent.org/zibimucole.java</a> <br> <br> Example API-Plugin class: <a href="http://paste.inventivetalent.org/mevikuwego.java">paste.inventivetalent.org/mevikuwego.java</a> <br> Example API-Plugin API class: <a
  * href="http://paste.inventivetalent.org/aqigutunax.java">paste.inventivetalent.org/aqigutunax.java</a> <br> <br> <strong>For both API and Plugin make sure that you add a <i>softdepend</i> for the APIs you require to the plugin.yml!</strong>
  */
+
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class APIManager {
 
-	private static final Map<API, RegisteredAPI>                HOST_MAP            = new HashMap<>();
+	private static final Map<API, RegisteredAPI> HOST_MAP = new HashMap<>();
 	private static final Map<Class<? extends API>, Set<Plugin>> PENDING_API_CLASSES = new HashMap<>();
-	private static final Logger                                 LOGGER              = Logger.getLogger("APIManager");
+	private static final Logger LOGGER = Logger.getLogger("APIManager");
 
 	/**
 	 * Register an API <p> Call this in {@link Plugin#onLoad()}
@@ -38,7 +40,9 @@ public class APIManager {
 	 * @throws APIRegistrationException if the API is already registered
 	 */
 	public static RegisteredAPI registerAPI(API api) throws APIRegistrationException {
-		if (HOST_MAP.containsKey(api)) { throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is already registered"); }
+		if (HOST_MAP.containsKey(api)) {
+			throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is already registered");
+		}
 		RegisteredAPI registeredAPI = new RegisteredAPI(api);
 		HOST_MAP.put(api, registeredAPI);
 
@@ -75,7 +79,9 @@ public class APIManager {
 	 * @throws APIRegistrationException If the API is not registered
 	 */
 	public static API registerEvents(API api, Listener listener) throws APIRegistrationException {
-		if (!HOST_MAP.containsKey(api)) { throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is not registered"); }
+		if (!HOST_MAP.containsKey(api)) {
+			throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is not registered");
+		}
 		RegisteredAPI registeredAPI = HOST_MAP.get(api);
 		if (registeredAPI.eventsRegistered) {
 			return api;//Only register events once
@@ -89,7 +95,9 @@ public class APIManager {
 	 * Initializes an API
 	 */
 	private static void initAPI(API api) throws APIRegistrationException {
-		if (!HOST_MAP.containsKey(api)) { throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is not registered"); }
+		if (!HOST_MAP.containsKey(api)) {
+			throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is not registered");
+		}
 		RegisteredAPI registeredAPI = HOST_MAP.get(api);
 
 		//Call init()
@@ -116,13 +124,17 @@ public class APIManager {
 					clazzAPI = clazz.newInstance();
 					registerAPI(clazzAPI);
 					for (Plugin plugin : PENDING_API_CLASSES.get(clazz)) {
-						if (plugin != null) { registerAPIHost(clazzAPI, plugin); }
+						if (plugin != null) {
+							registerAPIHost(clazzAPI, plugin);
+						}
 					}
 				} catch (ReflectiveOperationException e) {
 					LOGGER.warning("API class '" + clazz.getName() + "' is missing valid constructor");
 				}
 				PENDING_API_CLASSES.remove(clazz);
-			} else { throw new APIRegistrationException("API for class '" + clazz.getName() + "' is not registered"); }
+			} else {
+				throw new APIRegistrationException("API for class '" + clazz.getName() + "' is not registered");
+			}
 		}
 		initAPI(clazzAPI);
 	}
@@ -131,7 +143,9 @@ public class APIManager {
 	 * Disable an API
 	 */
 	private static void disableAPI(API api) {
-		if (!HOST_MAP.containsKey(api)) { return; }
+		if (!HOST_MAP.containsKey(api)) {
+			return;
+		}
 		RegisteredAPI registeredAPI = HOST_MAP.get(api);
 
 		//Call disable()
@@ -164,7 +178,9 @@ public class APIManager {
 	 */
 	public static void require(Class<? extends API> clazz, Plugin host) {
 		try {
-			if (host == null) { throw new APIRegistrationException(); }
+			if (host == null) {
+				throw new APIRegistrationException();
+			}
 			registerAPIHost(clazz, host);
 		} catch (APIRegistrationException e) {
 			if (PENDING_API_CLASSES.containsKey(clazz)) {
@@ -186,7 +202,9 @@ public class APIManager {
 	 */
 	private static RegisteredAPI registerAPIHost(API api, Plugin host) throws APIRegistrationException {
 		validatePlugin(host);
-		if (!HOST_MAP.containsKey(api)) { throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is not registered"); }
+		if (!HOST_MAP.containsKey(api)) {
+			throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is not registered");
+		}
 		RegisteredAPI registeredAPI = HOST_MAP.get(api);
 		registeredAPI.registerHost(host);
 
@@ -210,7 +228,9 @@ public class APIManager {
 				break;
 			}
 		}
-		if (clazzAPI == null) { throw new APIRegistrationException("API for class '" + clazz.getName() + "' is not registered"); }
+		if (clazzAPI == null) {
+			throw new APIRegistrationException("API for class '" + clazz.getName() + "' is not registered");
+		}
 		return registerAPIHost(clazzAPI, host);
 	}
 
@@ -221,12 +241,16 @@ public class APIManager {
 	 * @return {@link Plugin} instance
 	 */
 	public static Plugin getAPIHost(API api) throws APIRegistrationException, MissingHostException {
-		if (!HOST_MAP.containsKey(api)) { throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is not registered"); }
+		if (!HOST_MAP.containsKey(api)) {
+			throw new APIRegistrationException("API for '" + api.getClass().getName() + "' is not registered");
+		}
 		return HOST_MAP.get(api).getNextHost();
 	}
 
 	private static void validatePlugin(Plugin plugin) {
-		if (plugin instanceof API) { throw new IllegalArgumentException("Plugin must not implement API"); }
+		if (plugin instanceof API) {
+			throw new IllegalArgumentException("Plugin must not implement API");
+		}
 	}
 
 }

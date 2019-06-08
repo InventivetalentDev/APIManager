@@ -1,5 +1,6 @@
 package org.inventivetalent.apihelper.exception;
 
+@SuppressWarnings("unused")
 public class APIRegistrationException extends RuntimeException {
 	public APIRegistrationException() {
 	}
